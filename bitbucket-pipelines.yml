@@ -1,0 +1,31 @@
+image: node:22
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Test and smoke check
+          caches:
+            - node
+          script:
+            - npm test
+            - nohup npm start > app.log 2>&1 &
+            - echo $! > app.pid
+            - sleep 5
+            - bash scripts/smoke-test.sh http://localhost:8080
+          after-script:
+            - if [ -f app.pid ]; then kill "$(cat app.pid)" || true; fi
+  pull-requests:
+    "**":
+      - step:
+          name: PR test and smoke check
+          caches:
+            - node
+          script:
+            - npm test
+            - nohup npm start > app.log 2>&1 &
+            - echo $! > app.pid
+            - sleep 5
+            - bash scripts/smoke-test.sh http://localhost:8080
+          after-script:
+            - if [ -f app.pid ]; then kill "$(cat app.pid)" || true; fi

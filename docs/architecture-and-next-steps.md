@@ -17,7 +17,11 @@ flowchart TD
   Repo --> GitHub["GitHub repository"]
   GitHub --> GHA["GitHub Actions CI<br/>test, start app, smoke test"]
 
+  Repo --> Bitbucket["Bitbucket repository<br/>optional second remote"]
+  Bitbucket --> BBP["Bitbucket Pipelines<br/>test, start app, smoke test"]
+
   GitHub --> Jenkins["Jenkins pipeline<br/>optional CI/CD practice"]
+  Bitbucket -. optional source .-> Jenkins
   Jenkins --> JenkinsTest["npm test"]
   Jenkins --> JenkinsSmoke["start app + smoke test"]
 
@@ -39,11 +43,12 @@ flowchart TD
 1. Finish local no-Docker workflow.
 2. Push the project to GitHub.
 3. Let GitHub Actions run on every push.
-4. Set up Jenkins only if you want hands-on CI/CD practice.
-5. Deploy to a Linux VM using `systemd`.
-6. Move that Linux VM to AWS EC2 using Terraform.
-7. Add monitoring and alerts.
-8. Add Kubernetes or ECS later only when you want container-based deployment.
+4. Add Bitbucket as an optional second remote if you want platform practice.
+5. Set up Jenkins only if you want hands-on CI/CD practice.
+6. Deploy to a Linux VM using `systemd`.
+7. Move that Linux VM to AWS EC2 using Terraform.
+8. Add monitoring and alerts.
+9. Add Kubernetes or ECS later only when you want container-based deployment.
 
 ## Phase 1: Local Machine
 
@@ -110,6 +115,24 @@ Done when:
 - Jenkins can pull your repo
 - Jenkins pipeline completes successfully
 - `app.log` is archived after each run
+
+## Optional Phase: Bitbucket
+
+Goal: practice a second Git hosting and CI platform.
+
+Use:
+
+```text
+bitbucket-pipelines.yml
+docs/bitbucket-workflow.md
+```
+
+Done when:
+
+- Bitbucket repo exists
+- `bitbucket` remote is configured
+- branch push works
+- Bitbucket Pipelines passes
 
 ## Phase 4: Linux Server
 
