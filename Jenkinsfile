@@ -31,7 +31,7 @@ pipeline {
 
     stage('Smoke Test') {
       steps {
-        sh './scripts/smoke-test.sh http://localhost:8080'
+        sh 'bash scripts/smoke-test.sh http://localhost:8080'
       }
     }
   }

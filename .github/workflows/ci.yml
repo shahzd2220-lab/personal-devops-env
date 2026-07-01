@@ -30,7 +30,7 @@ jobs:
           sleep 5
 
       - name: Smoke test
-        run: ./scripts/smoke-test.sh http://localhost:8080
+        run: bash scripts/smoke-test.sh http://localhost:8080
 
       - name: Stop app
         if: always()
