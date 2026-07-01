@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: personal-devops-env
+  namespace: personal-devops
+spec:
+  type: ClusterIP
+  selector:
+    app: personal-devops-env
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

@@ -1,0 +1,38 @@
+name: ci-no-docker
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test
+        run: npm test
+
+      - name: Start app
+        run: |
+          nohup npm start > app.log 2>&1 &
+          echo $! > app.pid
+          sleep 5
+
+      - name: Smoke test
+        run: ./scripts/smoke-test.sh http://localhost:8080
+
+      - name: Stop app
+        if: always()
+        run: |
+          if [ -f app.pid ]; then kill "$(cat app.pid)" || true; fi

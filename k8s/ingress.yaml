@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: personal-devops-env
+  namespace: personal-devops
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - CHANGE_ME_DOMAIN
+      secretName: personal-devops-env-tls
+  rules:
+    - host: CHANGE_ME_DOMAIN
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: personal-devops-env
+                port:
+                  number: 80

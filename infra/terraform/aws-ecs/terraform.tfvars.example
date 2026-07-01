@@ -1,0 +1,6 @@
+aws_region         = "us-east-1"
+app_name           = "personal-devops-env"
+image_uri          = "123456789012.dkr.ecr.us-east-1.amazonaws.com/personal-devops-env:CHANGE_ME_SHA"
+vpc_id             = "vpc-CHANGE_ME"
+public_subnet_ids  = ["subnet-CHANGE_ME_PUBLIC_A", "subnet-CHANGE_ME_PUBLIC_B"]
+private_subnet_ids = ["subnet-CHANGE_ME_PRIVATE_A", "subnet-CHANGE_ME_PRIVATE_B"]

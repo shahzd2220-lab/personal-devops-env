@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+apt-get update
+apt-get install -y ca-certificates curl git
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt-get install -y nodejs
+
+mkdir -p /opt/${app_name}/src
+
+cat >/opt/${app_name}/package.json <<'PACKAGE'
+{
+  "name": "personal-devops-env",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  }
+}
+PACKAGE
+
+cat >/opt/${app_name}/src/server.js <<'APP'
+import http from "node:http";
+
+const port = Number.parseInt(process.env.APP_PORT || "8080", 10);
+const appName = process.env.APP_NAME || "personal-devops-env";
+const appEnv = process.env.APP_ENV || "production";
+
+const server = http.createServer((request, response) => {
+  const url = new URL(request.url, `http://${request.headers.host}`);
+  response.setHeader("content-type", "application/json; charset=utf-8");
+
+  if (url.pathname === "/health") {
+    response.writeHead(200);
+    response.end(JSON.stringify({ status: "ok", service: appName, environment: appEnv }) + "\n");
+    return;
+  }
+
+  response.writeHead(200);
+  response.end(JSON.stringify({ message: "Personal DevOps environment on AWS EC2", endpoints: ["/health"] }) + "\n");
+});
+
+server.listen(port, () => {
+  console.log(`${appName} listening on port ${port}`);
+});
+APP
+
+cat >/opt/${app_name}/.env <<'ENV'
+APP_NAME=${app_name}
+APP_ENV=production
+APP_PORT=8080
+ENV
+
+cat >/etc/systemd/system/${app_name}.service <<SERVICE
+[Unit]
+Description=${app_name}
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/${app_name}
+EnvironmentFile=/opt/${app_name}/.env
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+RestartSec=5
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+
+systemctl daemon-reload
+systemctl enable ${app_name}
+systemctl start ${app_name}
