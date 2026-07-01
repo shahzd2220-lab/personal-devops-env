@@ -11,6 +11,7 @@ and deploy it without requiring Docker.
 - Node's built-in test runner
 - No-Docker local scripts
 - GitHub Actions CI
+- Bitbucket Pipelines CI
 - Jenkins pipeline
 - AWS EC2/Linux `systemd` Terraform starter
 - AWS ECS/Fargate Terraform starter for optional container work later
@@ -65,6 +66,23 @@ git push -u origin main
 ```
 
 GitHub Actions will run automatically on pushes and pull requests.
+
+## Optional: Put It On Bitbucket
+
+This repo also includes `bitbucket-pipelines.yml`.
+
+Open:
+
+```text
+docs/bitbucket-workflow.md
+```
+
+Recommended setup:
+
+```bash
+git remote add bitbucket https://bitbucket.org/YOUR_WORKSPACE/personal-devops-env.git
+git push -u bitbucket main
+```
 
 ## Jenkins
 
